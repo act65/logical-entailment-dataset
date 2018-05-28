@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 """
     Copyright 2018 Google LLC
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,10 +48,6 @@ For all "all x . k" is parsed as a binary op, with op-type "A" and arguments
 [x, k]. Similarly for "exists x . k".
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import collections
 import functools
 
@@ -80,8 +79,8 @@ class Language(object):
     self._constants = constants
     self._variables = variables
     self._max_arity = max(arities.values())
-    self._ops = arities.keys()
-    self._symbols = arities.keys() + predicates + constants + variables
+    self._ops = list(arities.keys())
+    self._symbols = list(arities.keys()) + predicates + constants + variables
 
   @property
   def arities(self):
@@ -143,7 +142,7 @@ TRUE_SYMBOL = 'T'
 
 def propositional_language(num_variables=26):
   """Makes a propositional logic language."""
-  predicates = [chr(ord('a') + i) for i in xrange(num_variables)]
+  predicates = [chr(ord('a') + i) for i in range(num_variables)]
 
   return Language(
       collections.OrderedDict([
@@ -320,9 +319,9 @@ class Parser(object):
     """Returns list of `pyparsing.Expression` matching relations."""
     expressions = []
     # Relations of various arities.
-    for arity in xrange(1, FOL_MAX_RELATION_ARITY + 1):
+    for arity in range(1, FOL_MAX_RELATION_ARITY + 1):
       expression = predicate_symbol + pyparsing.Literal('(').suppress()
-      for i in xrange(arity):
+      for i in range(arity):
         if i > 0:
           expression += pyparsing.Literal(',').suppress()
         expression += variable_or_constant_symbol
@@ -344,7 +343,7 @@ class Parser(object):
         XOR_SYMBOL: '^',
     }
     expressions = []
-    for binary_op, op_symbols in binary_op_symbols.iteritems():
+    for binary_op, op_symbols in binary_op_symbols.items():
       op = left_formula + pyparsing.oneOf(op_symbols).suppress() + right_formula
       op.setParseAction(functools.partial(self._op, op=binary_op))
       expressions.append(op)
@@ -364,7 +363,7 @@ class Parser(object):
     parse_args = [_ensure_subexpression(arg) for arg in parse_args]
     arity = len(parse_args)
     indices = []
-    for i in xrange(arity):
+    for i in range(arity):
       if i == 0:
         indices = [-1]
       else:
@@ -411,7 +410,7 @@ class Parser(object):
     for c in (self._language.predicates + self._language.constants
               + self._language.variables):
       map_[c] = c
-    keyword_lengths = sorted(set(len(keyword) for keyword in map_.iterkeys()),
+    keyword_lengths = sorted(set(len(keyword) for keyword in list(map_.keys())),
                              reverse=True)
 
     result = []
