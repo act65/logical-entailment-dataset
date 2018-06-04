@@ -1,7 +1,5 @@
-from distutils.core import setup
+from setuptools import setup
 
-setup(name='parser',
-      version='1.0',
-      description='Parser',
-      py_modules=['parser']
+setup(name='LED',
+      packages=['led_parser']
      )
